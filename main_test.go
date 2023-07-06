@@ -179,74 +179,46 @@ func TestInsertABook(t *testing.T) {
 	}
 }
 
-// func TestUpdateBookHandler(t *testing.T) {
-// 	// Set up a test database or use an in-memory database
-// 	// and create a new test server with your router
-// 	var Bookcontroller controllers.Bookcontrollers
-// 	Bookcontroller.CreateDatabase()
+func TestUpdateBookHandler(t *testing.T) {
+	var Bookcontroller controllers.Bookcontrollers
+	Bookcontroller.CreateDatabase()
 
-// 	//routing using Gollira Mux
-// 	r := mux.NewRouter()
-// 	r.HandleFunc("/books/{id}", Bookcontroller.UpdateBook).Methods("PUT")
+	r := mux.NewRouter()
+	r.HandleFunc("/books/{id}", Bookcontroller.UpdateBook).Methods("PUT")
 
-// 	testServer := httptest.NewServer(r)
-// 	defer testServer.Close()
+	testServer := httptest.NewServer(r)
+	defer testServer.Close()
 
-// 	// Insert a sample book record into the database with the ID that you want to update
-// 	// You can use a separate function to insert the sample book record into the database
+	bookIDToUpdate := 1
+	updatedBook := struct {
+		Title           string `json:"title"`
+		Author          string `json:"author"`
+		PublicationYear int    `json:"publicationYear"`
+	}{
+		Title:           "Updated Book Title",
+		Author:          "Updated Book Author",
+		PublicationYear: 2023,
+	}
 
-// 	// Define the book payload to update an existing book record
-// 	bookIDToUpdate := 1
-// 	updatedBook := struct {
-// 		Title           string `json:"title"`
-// 		Author          string `json:"author"`
-// 		PublicationYear int    `json:"publicationYear"`
-// 	}{
-// 		Title:           "Updated Book Title",
-// 		Author:          "Updated Book Author",
-// 		PublicationYear: 2023,
-// 	}
+	// Convert the book payload to JSON
+	requestBody, err := json.Marshal(updatedBook)
+	if err != nil {
+		t.Fatalf("Failed to marshal JSON: %v", err)
+	}
 
-// 	// Convert the book payload to JSON
-// 	requestBody, err := json.Marshal(updatedBook)
-// 	if err != nil {
-// 		t.Fatalf("Failed to marshal JSON: %v", err)
-// 	}
+	client := &http.Client{}
 
-// 	response, err := http.NewRequest("PUT", testServer.URL+"/books/"+strconv.Itoa(bookIDToUpdate), bytes.NewBuffer(requestBody))
-// 	// Make a PUT request to update the book record
-// 	// response, err := http.Put(testServer.URL+"/books/"+strconv.Itoa(bookIDToUpdate), "application/json", bytes.NewBuffer(requestBody))
-// 	if err != nil {
-// 		t.Fatalf("Failed to make PUT request: %v", err)
-// 	}
-// 	defer response.Body.Close()
+	req, err := http.NewRequest("PUT", testServer.URL+"/books/"+strconv.Itoa(bookIDToUpdate), bytes.NewBuffer(requestBody))
+	if err != nil {
+		t.Fatalf("Failed to make PUT request: %v", err)
+	}
 
-// 	// Check the response status code
-// 	if response.StatusCode != http.StatusOK {
-// 		t.Errorf("Expected status code %d, but got %d", http.StatusOK, response.StatusCode)
-// 	}
-
-// 	// After the PUT request, make a GET request to fetch the updated book
-// 	getResponse, err := http.Get(testServer.URL + "/books/" + strconv.Itoa(bookIDToUpdate))
-// 	if err != nil {
-// 		t.Fatalf("Failed to make GET request: %v", err)
-// 	}
-// 	defer getResponse.Body.Close()
-
-// 	// Check the response status code for the GET request
-// 	if getResponse.StatusCode != http.StatusOK {
-// 		t.Errorf("Expected status code %d for updated book, but got %d", http.StatusOK, getResponse.StatusCode)
-// 	}
-
-// 	// Decode the response body into a Book struct
-// 	var updatedBookResponse models.Book
-// 	err = json.NewDecoder(getResponse.Body).Decode(&updatedBookResponse)
-// 	if err != nil {
-// 		t.Fatalf("Failed to decode response body: %v", err)
-// 	}
-
-// 	// Check if the updated book matches the expected values
-// 	if updatedBookResponse.Title != updatedBook.Title || updatedBookResponse.Author != updatedBook.Author || updatedBookResponse.PublicationYear != updatedBook.PublicationYear {
-// 		t.Errorf("Updated book does not match the expected values")
-// 	}
-// }
+	res, err := client.Do(req)
+	if err != nil {
+		t.Fatalf("Failed to make PUT request: %v", err)
+	}
+	// Check the response status code
+	if res.StatusCode != http.StatusOK {
+		t.Errorf("Expected status code %d, but got %d", http.StatusOK, res.StatusCode)
+	}
+}
