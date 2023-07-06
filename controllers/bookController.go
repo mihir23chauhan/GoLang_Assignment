@@ -135,6 +135,8 @@ func (c *Bookcontrollers) InsertBook(w http.ResponseWriter, r *http.Request) {
 	ReportError(err)
 
 	fmt.Println("Succesfully Inserted.")
+	w.WriteHeader(http.StatusCreated)
+
 	json.NewEncoder(w).Encode(book)
 
 }
