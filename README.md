@@ -15,14 +15,16 @@ The API can be run by executing the main function in the `main.go` file. It star
 
 1. Clone the Repository
 2. Navigate to the Project Directory
-3. Initialize Go Modules: In the project directory, run the following command to initialize Go modules and manage dependencies:
-
-```
-go mod init
-```
-4. Fetch Dependencies: Run the following command to fetch the required dependencies and ensure they are available:
+3. Fetch Dependencies: Run the following command to fetch the required dependencies and ensure they are available:
 ```
 go mod tidy
+```
+4. Check if `Gorrila/mux` and `squlite3` go module are installed or not in the system. 
+```
+require (
+	github.com/gorilla/mux v1.8.0
+	github.com/mattn/go-sqlite3 v1.14.17
+)
 ```
 
 ### Running the API
