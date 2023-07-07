@@ -19,6 +19,16 @@ type Bookset struct {
 - This function connects to the SQLite database file (`bookset.db`) using the `sql.Open` function and checks if the `books table` already exists in the database. 
 - If the table does not exist, it creates it using the `CREATE TABLE IF NOT EXISTS` SQL statement.
 
+```
+`
+CREATE TABLE IF NOT EXISTS books (
+id INTEGER NOT NULL PRIMARY KEY,
+title TEXT,
+author TEXT,
+publicationYear INTEGER
+);`
+```
+
 #### `Uid() int`
 - Description: Generates a unique ID for a book.
 
